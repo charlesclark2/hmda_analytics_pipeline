@@ -1,0 +1,61 @@
+name: Run HMDA DYCU Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      zip_url:
+        description: 'URL of the HMDA ZIP file'
+        required: true
+      raw_s3_bucket:
+        description: 'Raw S3 bucket name'
+        required: true
+      clean_s3_bucket: 
+        description: 'Cleaned S3 bucket name'
+        required: true
+      raw_prefix:
+        description: 'Raw prefix in S3'
+        default: 'raw/hmda/2023/'
+      clean_prefix:
+        description: 'Clean prefix in S3'
+        default: 'clean/hmda/2023/'
+      aws_region:
+        description: 'AWS region'
+        default: 'us-east-1'
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::769392325318:role/github-actions-run-hmda-pipeline
+          aws-region: ${{ github.event.inputs.aws_region }}
+
+      - name: Run raw ingest
+        run: |
+          python scripts/ingest_raw_csv.py \
+            --url "${{ github.event.inputs.zip_url }}" \
+            --bucket "${{ github.event.inputs.raw_s3_bucket }}" \
+            --prefix "${{ github.event.inputs.raw_prefix }}"
+
+      - name: Run clean-to-parquet
+        run: |
+          python scripts/clean_to_parquet.py \
+            --source-bucket "${{ github.event.inputs.raw_s3_bucket }}" \
+            --target-bucket "${{ github.event.inputs.clean_s3_bucket }}" \
+            --raw-prefix "${{ github.event.inputs.raw_prefix }}" \
+            --clean-prefix "${{ github.event.inputs.clean_prefix }}"

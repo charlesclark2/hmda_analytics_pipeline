@@ -39,13 +39,15 @@ if __name__ == "__main__":
     parser.add_argument('--bucket', required=True, help="S3 bucket to upload to")
     parser.add_argument('--prefix', default='raw/hmda/2023/', help="S3 prefix for raw CSV files")
     parser.add_argument('--profile', default=None, help="AWS CLI profile name")
+
     args = parser.parse_args()
 
-    upload_raw_csv_chunks(args.url, args.bucket, args.prefix, profile=args.profile)
+    upload_raw_csv_chunks(
+        args.url, 
+        args.bucket, 
+        args.prefix, 
+        profile=args.profile
+    )
+    
 
-# python ingest_to_s3.py
-#  --source_url https://s3.amazonaws.com/cfpb-hmda-public/prod/snapshot-data/2023/2023_public_lar_csv.zip 
-# --aws_profile_name AdministratorAccess-769392325318 
-# --target_s3_bucket_name mortgage-data-raw 
-# --target_s3_prefix hmda/2023/public_lar 
-# --source_file_type zip
+

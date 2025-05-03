@@ -43,6 +43,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::769392325318:role/github-actions-run-hmda-pipeline
+          role-session-name: github-actions
           aws-region: ${{ github.event.inputs.aws_region }}
 
       - name: Run raw ingest

@@ -58,8 +58,8 @@ jobs:
       - name: Run Summary Script
         run: |
           python scripts/dycu_output.py \
-          --bucket "${{ github.event.inputs.clean_s3_bucket }}" \
-          --prefix "${{ github.event.inputs.clean_prefix }}" \ 
-          --refined-bucket "${{ github.event.inputs.refined_s3_bucket }}" \
-          --mke-output-prefix "${{ github.event.inputs.mke_output_prefix }}" \
-          --mke-summary-prefix "${{ github.event.inputs.mke_summary_prefix }}"
+            --bucket "${{ github.event.inputs.clean_s3_bucket }}" \
+            --prefix "${{ github.event.inputs.clean_prefix }}" \ 
+            --refined-bucket "${{ github.event.inputs.refined_s3_bucket }}" \
+            --mke-output-prefix "${{ github.event.inputs.mke_output_prefix }}" \
+            --mke-summary-prefix "${{ github.event.inputs.mke_summary_prefix }}"

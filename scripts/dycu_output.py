@@ -116,11 +116,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Clean and convert raw CSV to Parquet in S3")
     parser.add_argument('--bucket', required=True, help="Source S3 bucket name")
     parser.add_argument('--prefix', required=True, help="The prefix where the files are located")
-    parser.add_argument('--profile', default=None, help="AWS CLI profile name")
     parser.add_argument('--refined-bucket', required=True, help="Bucket where refined data lands")
-    parser.add_argument('--target-output-path', default='dycu_outputs/HMDA_2022_CTData.xls')
     parser.add_argument('--mke-output-prefix', required=True, help="The prefix for the MKE parquet output")
     parser.add_argument('--mke-summary-prefix', required=True, help="Summary output prefix in DYCU format in CSV")
+    parser.add_argument('--target-output-path', default='dycu_outputs/HMDA_2022_CTData.xls')
+    parser.add_argument('--profile', default=None, help="AWS CLI profile name")
     args = parser.parse_args()
 
     target_df = get_target_df(args.refined_bucket, args.target_output_path, profile=args.profile)

@@ -45,11 +45,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::769392325318:role/github-actions-run-hmda-pipeline
-          role-session-name: github-ci
           aws-region: ${{ github.event.inputs.aws_region }}
+
 
       - name: Run raw ingest
         run: |

@@ -25,6 +25,9 @@ on:
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
+    permissions: 
+      id-token: write
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -49,6 +52,9 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::769392325318:role/github-actions-run-hmda-pipeline
           aws-region: ${{ github.event.inputs.aws_region }}
+      
+      - name: Verify AWS identity
+        run : aws sts get-caller-identity
 
 
       - name: Run raw ingest

@@ -34,6 +34,11 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Check repo
+        run: |
+          echo "REPO: $GITHUB_REPOSITORY"
+          echo "REF: $GITHUB_REF"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip

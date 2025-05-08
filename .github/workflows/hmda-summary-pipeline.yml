@@ -1,0 +1,65 @@
+name: DYCU Summary Output Pipeline
+
+on: 
+  workflow_dispatch: 
+    inputs: 
+      clean_s3_bucket: 
+        description: 'Cleaned S3 bucket name'
+        required: true
+      refined_s3_bucket: 
+        description: 'Refined S3 bucket name'
+        required: true 
+      clean_prefix:
+        description: 'Clean prefix in S3'
+        default: 'clean/hmda/2023/'
+        required: true 
+      target_output_prefix: 
+        description: 'Prefix in S3 for the original file provided by DYCU'
+        default: 'dycu_outputs/HMDA_2022_CTData.xls'
+      mke_output_prefix: 
+        description: 'S3 prefix for the filtered Milwaukee data'
+        required: true 
+      mke_summary_prefix: 
+        description: 'S3 prefix for the summary file to match the target output format'
+        required: true 
+      aws_region:
+        description: 'AWS region'
+        default: 'us-east-1'
+  
+jobs: 
+  create-summary: 
+    runs-on: ubuntu-latest
+    permissions: 
+      id-token: write
+      contents: read 
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+    
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::769392325318:role/github-actions-run-hmda-pipeline
+          aws-region: ${{ github.event.inputs.aws_region }}
+      
+      - name: Verify AWS identity
+        run : aws sts get-caller-identity
+
+      - name: Run Summary Script
+        run: |
+          python scripts/dycu_output.py \
+          --bucket "${{ github.event.inputs.clean_s3_bucket }}" \
+          --prefix "${{ github.event.inputs.clean_prefix }}" \ 
+          --refined-bucket "${{ github.event.inputs.refined_s3_bucket }}" \
+          --mke-output-prefix "${{ github.event.inputs.mke_output_prefix }}" \
+          --mke-summary-prefix "${{ github.event.inputs.mke_summary_prefix }}"

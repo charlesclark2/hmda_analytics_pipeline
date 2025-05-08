@@ -15,9 +15,11 @@ on:
       raw_prefix:
         description: 'Raw prefix in S3'
         default: 'raw/hmda/2023/'
+        required: true
       clean_prefix:
         description: 'Clean prefix in S3'
         default: 'clean/hmda/2023/'
+        required: true 
       aws_region:
         description: 'AWS region'
         default: 'us-east-1'
@@ -36,11 +38,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
-      - name: Check repo
-        run: |
-          echo "REPO: $GITHUB_REPOSITORY"
-          echo "REF: $GITHUB_REF"
 
       - name: Install dependencies
         run: |

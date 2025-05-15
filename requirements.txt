@@ -4,3 +4,4 @@ pyarrow
 s3fs
 requests
 xlrd
+numpy

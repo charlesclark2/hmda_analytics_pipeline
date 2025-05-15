@@ -50,11 +50,15 @@ def clean_dataframe(df):
     })
 
     # Handle loan-to-value logic
-    if 'loan_to_value_ratio' in df.columns:
+    if 'loan_to_value_ratio' in df.columns.tolist() and 'combined_loan_to_value_ratio' in df.columns.tolist():
         df['combined_loan_to_value_ratio'] = pd.to_numeric(df['combined_loan_to_value_ratio'], errors='coerce')
         df['effective_ltv'] = df['loan_to_value_ratio']
         df.loc[df['effective_ltv'].isna(), 'effective_ltv'] = df['combined_loan_to_value_ratio']
-    elif 'combined_loan_to_value_ratio' in df.columns:
+    elif 'loan_to_value_ratio' in df.columns.tolist() and 'combined_loan_to_value_ratio' not in df.columns.tolist():
+        df['combined_loan_to_value_ratio'] = np.nan
+        df['effective_ltv'] = df['loan_to_value_ratio']
+        df.loc[df['effective_ltv'].isna(), 'effective_ltv'] = df['combined_loan_to_value_ratio']
+    elif 'combined_loan_to_value_ratio' in df.columns.tolist() and 'loan_to_value_ratio' not in df.columns.tolist():
         df['combined_loan_to_value_ratio'] = pd.to_numeric(df['combined_loan_to_value_ratio'], errors='coerce')
         df['effective_ltv'] = df['combined_loan_to_value_ratio']
     else:

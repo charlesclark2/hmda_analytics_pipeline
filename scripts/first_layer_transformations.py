@@ -123,8 +123,12 @@ def main(source_bucket, target_bucket, raw_prefix, clean_prefix, clean_file_base
     print(f"Getting files from {raw_prefix}", flush=True)
     parquet_files = fs.glob(f"{source_bucket}/{raw_prefix}*.parquet")
     for file in parquet_files: 
+        root_file_part = file.split('/')[-1].split('_')[-1].replace('.parquet', '')
         print(f"Processing {file}", flush=True)
         df = pd.read_parquet(f"s3://{file}", engine='pyarrow', filesystem=fs)
+
+        df_columns = df.columns.tolist()
+        print(df.columns.tolist())
 
         # drop duplicates
         print("Dropping duplicates", flush=True)
@@ -183,9 +187,17 @@ def main(source_bucket, target_bucket, raw_prefix, clean_prefix, clean_file_base
         df.loc[df['business_or_commercial_purpose'] == 1111, 'business_or_commercial_purpose'] = np.nan
 
         df = df.reset_index(drop=True)
-        df['combined_loan_to_value_ratio'] = pd.to_numeric(df['combined_loan_to_value_ratio'], errors='coerce')
-        df['effective_ltv'] = df['loan_to_value_ratio']
-        df.loc[df['effective_ltv'].isna(), 'effective_ltv'] = df['combined_loan_to_value_ratio']
+        if 'loan_to_value_ratio' in df_columns: 
+            df['combined_loan_to_value_ratio'] = pd.to_numeric(df['combined_loan_to_value_ratio'], errors='coerce')
+            df['effective_ltv'] = df['loan_to_value_ratio']
+            df.loc[df['effective_ltv'].isna(), 'effective_ltv'] = df['combined_loan_to_value_ratio']
+        elif 'combined_loan_to_value_ratio' in df_columns: 
+            df['combined_loan_to_value_ratio'] = pd.to_numeric(df['combined_loan_to_value_ratio'], errors='coerce')
+            df['effective_ltv'] = np.nan
+            df.loc[df['effective_ltv'].isna(), 'effective_ltv'] = df['combined_loan_to_value_ratio']
+        else: 
+            df['effective_ltv'] = np.nan
+
 
         df['interest_rate'] = pd.to_numeric(df['interest_rate'], errors='coerce')
 
@@ -300,10 +312,10 @@ def main(source_bucket, target_bucket, raw_prefix, clean_prefix, clean_file_base
         df.loc[df['manufactured_home_land_property_interest'] == 1111, 'manufactured_home_land_property_interest'] = np.nan
 
         # total_units
-        df.loc[df['total_units'].isin([1, 1.0, '1']), 'total_units'] = 1
-        df.loc[df['total_units'].isin([2, 2.0, '2']), 'total_units'] = 2
-        df.loc[df['total_units'].isin([3, 4.0, '3']), 'total_units'] = 3
-        df.loc[df['total_units'].isin([4, 4.0, '4']), 'total_units'] = 4
+        df.loc[df['total_units'].isin([1, 1.0, '1']), 'total_units'] = '1'
+        df.loc[df['total_units'].isin([2, 2.0, '2']), 'total_units'] = '2'
+        df.loc[df['total_units'].isin([3, 4.0, '3']), 'total_units'] = '3'
+        df.loc[df['total_units'].isin([4, 4.0, '4']), 'total_units'] = '4'
 
         df['total_units_bucketed'] = df['total_units'].apply(total_units_bucketed)
 
@@ -653,14 +665,17 @@ def main(source_bucket, target_bucket, raw_prefix, clean_prefix, clean_file_base
 
         print(f"Cleaning complete - getting files ready for S3", flush=True)
 
-        for i, start_row in enumerate(range(0, len(df)), chunksize): 
+        count = 0
+        print(f"Processing {len(df)} rows in the dataframe", flush=True)
+        for i, start_row in enumerate(range(0, len(df), chunksize)): 
+            print(i)
             chunk = df.iloc[start_row:start_row + chunksize]
             table = pa.Table.from_pandas(chunk)
 
             parquet_buffer = io.BytesIO()
             pq.write_table(table, parquet_buffer)
 
-            clean_key = f"{clean_prefix}{clean_file_base}_{i}.parquet"
+            clean_key = f"{clean_prefix}{root_file_part}_{clean_file_base}_{count}.parquet"
             s3.put_object(
                 Bucket=target_bucket, 
                 Key=clean_key, 
@@ -668,6 +683,7 @@ def main(source_bucket, target_bucket, raw_prefix, clean_prefix, clean_file_base
             )
 
             print(f"✅ Uploaded clean Parquet chunk to s3://{target_bucket}/{clean_key}", flush=True)
+            count += 1
 
 
 

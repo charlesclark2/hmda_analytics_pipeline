@@ -53,7 +53,7 @@ jobs:
 
       - name: Run Summary Script
         run: |
-          python scripts/first_layer_transformations.py \
+          python scripts/simple_transformations/main.py \
             --source-bucket "${{ github.event.inputs.source_bucket }}" \
             --target-bucket "${{ github.event.inputs.target_bucket }}" \
             --raw-prefix "${{ github.event.inputs.raw_prefix }}" \

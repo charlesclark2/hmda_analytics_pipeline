@@ -116,8 +116,12 @@ def clean_dataframe(df):
 
     if 'loan_to_value_ratio' in df.columns:
         df['loan_to_value_ratio'] = pd.to_numeric(df['loan_to_value_ratio'], errors='coerce')
+    else: 
+        df['loan_to_value_ratio'] = np.nan
     if 'combined_loan_to_value_ratio' in df.columns:
         df['combined_loan_to_value_ratio'] = pd.to_numeric(df['combined_loan_to_value_ratio'], errors='coerce')
+    else: 
+        df['combined_laon_to_value_ratio'] = np.nan
 
     df['effective_ltv'] = df['loan_to_value_ratio']
     if 'combined_loan_to_value_ratio' in df.columns:

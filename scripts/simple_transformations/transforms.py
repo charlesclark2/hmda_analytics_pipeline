@@ -8,10 +8,35 @@ def replace_and_map(df, col, mapping):
     df[col] = df[col].map({k: v[1] for k, v in mapping.items()})
     return df
 
-def clean_column(df, col):
-    df.loc[df[col].isin(['nan', 'Exempt']), col] = np.nan
+def clean_column(df, col, allow_negative=True):
+    """
+    Cleans a numeric column by:
+    - Replacing common non-numeric strings with NaN
+    - Stripping whitespace
+    - Converting to float
+    - Optionally dropping negatives (e.g., for income, LTV, etc.)
+    """
+    if col not in df.columns:
+        return df
+
+    # Convert all values to string to normalize text-based nulls
+    df[col] = df[col].astype(str).str.strip()
+
+    # Replace known non-numeric flags
+    df[col] = df[col].replace(
+        to_replace=["nan", "NaN", "NAN", "NA", "Exempt", "None", "null", ""],
+        value=np.nan
+    )
+
+    # Now convert to float
     df[col] = pd.to_numeric(df[col], errors='coerce')
+
+    # Optionally drop invalid negative values
+    if not allow_negative:
+        df.loc[df[col] < 0, col] = np.nan
+
     return df
+
 
 def to_int64(df, col, replace_exempt=False):
     if replace_exempt:

@@ -2,6 +2,7 @@
 
 import pandas as pd
 import numpy as np
+import warnings
 
 def clean_column(df, col, allow_negative=True, verbose=False):
     """
@@ -39,11 +40,14 @@ def clean_categorical_column(df, col, standardize_case=True, replacements=None, 
     df[col] = df[col].astype(str).str.strip()
 
     if drop_null_like:
-        df[col] = df[col].replace(
-            ["", "nan", "null", "none", "na", "n/a", "exempt", ".", "-", "unknown"],
-            np.nan,
-            regex=True
-        )
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore', FutureWarning)
+            df[col] = df[col].replace(
+                ["", "nan", "null", "none", "na", "n/a", "exempt", ".", "-", "unknown"],
+                np.nan,
+                regex=True
+            ).infer_objects(copy=False)
+
 
     if title_case:
         df[col] = df[col].where(df[col].isna(), df[col].astype(str).str.strip().str.title())

@@ -55,39 +55,38 @@ def process_parquet_files(source_bucket, target_bucket, raw_prefix, clean_prefix
     schema_reference = None
     schema_report = []
 
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        futures = [executor.submit(clean_and_validate_file, file_path, fs) for file_path in parquet_files]
-        for future in concurrent.futures.as_completed(futures):
-            file_path, df, err = future.result()
-            if err:
-                print(f"❌ Failed to process {file_path}: {err}", flush=True)
-                schema_report.append((file_path, "LoadError", str(err)))
-                continue
+    print(f"Processing {len(parquet_files)} total files")
+    count = 0
+    for file_path in parquet_files: 
+        count += 1
+        if count % 10 == 0: 
+            print(f"{len(parquet_files) - count} files remaining")
+        fp, df, err = clean_and_validate_file(file_path, fs)
+        if err:
+            print(f"❌ Failed to process {fp}: {err}", flush=True)
+            schema_report.append((fp, "LoadError", str(err)))
+            continue
+        
+        current_schema = normalize_schema(df.dtypes)
 
-            current_schema = normalize_schema(df.dtypes)
+        if schema_reference is None:
+            schema_reference = current_schema
+        elif current_schema != schema_reference:
+            print(f"⚠️ Schema mismatch in {fp}, coercing to match reference...", flush=True)
+            mismatches = []
+            for col in current_schema:
+                if col not in schema_reference:
+                    mismatches.append((col, "Unexpected", current_schema[col], None))
+                elif current_schema[col] != schema_reference[col]:
+                    mismatches.append((col, "TypeMismatch", current_schema[col], schema_reference[col]))
+            for col in schema_reference:
+                if col not in current_schema:
+                    mismatches.append((col, "Missing", None, schema_reference[col]))
+            schema_report.append((fp, "SchemaMismatch", mismatches))
+            df = coerce_schema(df, schema_reference)
 
-            if schema_reference is None:
-                schema_reference = current_schema
-            elif current_schema != schema_reference:
-                print(f"⚠️ Schema mismatch in {file_path}, coercing to match reference...", flush=True)
-                mismatches = []
-                for col in current_schema:
-                    if col not in schema_reference:
-                        mismatches.append((col, "Unexpected", current_schema[col], None))
-                    elif current_schema[col] != schema_reference[col]:
-                        mismatches.append((col, "TypeMismatch", current_schema[col], schema_reference[col]))
-                for col in schema_reference:
-                    if col not in current_schema:
-                        mismatches.append((col, "Missing", None, schema_reference[col]))
-                schema_report.append((file_path, "SchemaMismatch", mismatches))
-                df = coerce_schema(df, schema_reference)
-
-            cleaned_data.append((file_path, df))
-
-    print("✅ Schema validation complete. Proceeding with upload...", flush=True)
-    for file_path, df in cleaned_data:
-        root_part = file_path.split('/')[-1].split('_')[-1].replace('.parquet', '')
-        print(f"📤 Uploading cleaned file in chunks for {file_path}", flush=True)
+        root_part = fp.split('/')[-1].split('_')[-1].replace('.parquet', '')
+        print(f"📤 Uploading cleaned file in chunks for {fp}", flush=True)
         upload_chunks_to_s3(df, s3, target_bucket, clean_prefix, f"{clean_file_base}_{root_part}", chunksize)
 
     print("\n📊 Schema Audit Report:")

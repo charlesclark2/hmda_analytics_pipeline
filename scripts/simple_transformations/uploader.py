@@ -22,3 +22,4 @@ def upload_chunks_to_s3(df, s3_client, bucket, prefix, base_filename, chunksize)
         print(f"✅ Uploaded chunk to s3://{bucket}/{key}", flush=True)
 
         count += 1
+

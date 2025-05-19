@@ -51,6 +51,9 @@ def validate_schema(df):
             raise TypeError(f"Column {col} has dtype {actual_dtype}, expected {expected_dtype}")
 
 def clean_dataframe(df):
+    df['activity_year'] = pd.to_numeric(df['activity_year'], errors='coerce').astype('Int64')
+    df['lei'] = df['lei'].astype(str)
+    df['derived_msa_md'] = df['derived_msa_md'].astype(str)
     df.loc[df['state_code'] == 'nan', 'state_code'] = np.nan
     df['state_code'] = df['state_code'].astype(str)
     df['county_code'] = df['county_code'].astype(str)
@@ -103,7 +106,7 @@ def clean_dataframe(df):
     if 'combined_loan_to_value_ratio' in df.columns:
         df['combined_loan_to_value_ratio'] = pd.to_numeric(df['combined_loan_to_value_ratio'], errors='coerce')
     else: 
-        df['combined_laon_to_value_ratio'] = np.nan
+        df['combined_loan_to_value_ratio'] = np.nan
 
     df['effective_ltv'] = df['loan_to_value_ratio']
     if 'combined_loan_to_value_ratio' in df.columns:

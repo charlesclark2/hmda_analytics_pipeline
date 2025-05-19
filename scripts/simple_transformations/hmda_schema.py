@@ -1,4 +1,7 @@
 canonical_schema = {
+    'activity_year': 'Int64',
+    'lei': 'string',
+    'derived_msa_md': 'string',
     'state_code': 'string',
     'county_code': 'string',
     'conforming_loan_limit': 'Int64',

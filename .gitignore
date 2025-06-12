@@ -181,3 +181,8 @@ cython_debug/
 # Other
 data/
 aws_login.txt
+*.proifles.yml
+*.vscode/
+*notes.txt
+*.duckdb
+*logs/

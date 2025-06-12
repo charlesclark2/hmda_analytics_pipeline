@@ -1,0 +1,12 @@
+version: 2
+
+models: 
+  - name: mart_hmda_applications_filtered
+  - name: mart_hmda_model_features
+  - name: mart_hmda_preprocessed
+    tests: 
+      - not_null_all_columns
+  - name: mart_hmda_post_model_set
+  - name: mart_hmda_fairness_scoring
+  - name: mart_hmda_validation_set
+  

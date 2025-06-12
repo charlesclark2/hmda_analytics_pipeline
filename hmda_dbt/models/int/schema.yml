@@ -1,0 +1,11 @@
+version: 2
+
+models: 
+  - name: int_hmda_all_years
+  - name: int_census_income_buckets
+  - name: int_hmda_enriched_with_census
+  - name: int_census_tract_to_zip_code_xref
+  - name: int_hmda_enriched_with_zillow
+  - name: int_hmda_enriched_with_distress
+  - name: int_zillow_market_data_agg
+  - name: int_legal_entity_identifier_xref

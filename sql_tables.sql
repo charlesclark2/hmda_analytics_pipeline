@@ -1,0 +1,16 @@
+CREATE TABLE hmda_snapshot_raw_2022 AS SELECT * FROM local.hmda_snapshot_raw_2022;
+CREATE TABLE hmda_snapshot_raw_2023 AS SELECT * FROM local.hmda_snapshot_raw_2023;
+CREATE TABLE int_hmda_all_years AS SELECT * FROM local.int_hmda_all_years;
+CREATE TABLE mart_hmda_applications_filtered AS SELECT * FROM local.mart_hmda_applications_filtered;
+CREATE TABLE stg_hmda_snapshot_raw_2018 AS SELECT * FROM local.stg_hmda_snapshot_raw_2018;
+CREATE TABLE stg_hmda_snapshot_raw_2019 AS SELECT * FROM local.stg_hmda_snapshot_raw_2019;
+CREATE TABLE stg_hmda_snapshot_raw_2020 AS SELECT * FROM local.stg_hmda_snapshot_raw_2020;
+CREATE TABLE stg_hmda_snapshot_raw_2021 AS SELECT * FROM local.stg_hmda_snapshot_raw_2021;
+CREATE TABLE int_census_income_buckets AS SELECT * FROM local.int_census_income_buckets;
+CREATE TABLE int_census_tract_to_zip_code_xref AS SELECT * FROM local.int_census_tract_to_zip_code_xref;
+CREATE TABLE int_hmda_enriched_with_census AS SELECT * FROM local.int_hmda_enriched_with_census;
+CREATE TABLE int_hmda_enriched_with_distress AS SELECT * FROM local.int_hmda_enriched_with_distress;
+CREATE TABLE int_hmda_enriched_with_zillow AS SELECT * FROM local.int_hmda_enriched_with_zillow;
+CREATE TABLE stg_census_acs AS SELECT * FROM local.stg_census_acs;
+CREATE TABLE stg_distressed_census_tracts AS SELECT * FROM local.stg_distressed_census_tracts;
+CREATE TABLE stg_zillow_market_data AS SELECT * FROM local.stg_zillow_market_data;

@@ -1,0 +1,62 @@
+version: 2
+
+models: 
+  - name: stg_hmda_snapshot_raw_2018
+    columns: 
+      - name: loan_application_id
+        description: This is the unique ID for a loan row
+        tests: 
+          - unique
+          - not_null
+
+  - name: stg_hmda_snapshot_raw_2019
+    columns: 
+      - name: loan_application_id
+        description: This is the unique ID for a loan row
+        tests: 
+          - unique
+          - not_null
+
+  - name: stg_hmda_snapshot_raw_2020
+    columns: 
+      - name: loan_application_id
+        description: This is the unique ID for a loan row
+        tests: 
+          - unique
+          - not_null
+
+  - name: stg_hmda_snapshot_raw_2021
+    columns: 
+      - name: loan_application_id
+        description: This is the unique ID for a loan row
+        tests: 
+          - unique
+          - not_null
+
+  - name: stg_hmda_snapshot_raw_2022
+    columns: 
+      - name: loan_application_id
+        description: This is the unique ID for a loan row
+        tests: 
+          - unique
+          - not_null
+  
+  - name: stg_census_acs
+
+  - name: stg_hmda_snapshot_raw_2023
+    columns: 
+      - name: loan_application_id
+        description: This is the unique ID for a loan row
+        tests: 
+          - unique
+          - not_null
+  - name: stg_zillow_market_data
+  - name: stg_census_tract_to_zipcode
+  - name: stg_distressed_census_tracts
+  - name: stg_legal_entity_identifier
+  - name: stg_hmda_training_base
+  - name: stg_hmda_training_with_strata
+  - name: stg_hmda_training_with_sample_weight
+  - name: stg_hmda_training_sampled
+  - name: stg_training_sample_stratified
+

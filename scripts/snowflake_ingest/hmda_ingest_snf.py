@@ -92,3 +92,4 @@ for url_item in url_list:
 
 conn.close()
 print("🏁 All years processed.")
+

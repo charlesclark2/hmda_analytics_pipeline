@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: hmda
+    database: hmda_redlining
+    schema: source
+    tables:
+      - name: hmda_snapshot_raw_2018
+      - name: hmda_snapshot_raw_2019
+      - name: hmda_snapshot_raw_2020
+      - name: hmda_snapshot_raw_2021
+      - name: hmda_snapshot_raw_2022
+      - name: hmda_snapshot_raw_2023
+      - name: hmda_categories_xref

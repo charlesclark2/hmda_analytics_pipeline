@@ -1,0 +1,18 @@
+version: 2
+
+sources: 
+  - name: other 
+    database: hmda_redlining
+    schema: source 
+    tables: 
+      - name: census_acs_raw
+      - name: zillow_zip_code_market_tracker_raw
+      - name: census_tract_to_zip_code_raw
+      - name: distressed_census_tracts_raw
+      - name: hmda_categories_xref
+      - name: legal_entity_identifier_raw
+      - name: state_fips_xref
+      - name: scored_results
+      - name: metrics_model_performance
+      - name: tract_centroids_raw
+      - name: race_counterfactual_results

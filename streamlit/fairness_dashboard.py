@@ -9,19 +9,13 @@ import os
 
 
 # Snowflake Connection
-conn = snowflake.connector.connect(
-    user=st.secrets.SNOWFLAKE_USER,
-    password=st.secrets.SNOWFLAKE_PASSWORD,
-    account=st.secrets.SNOWFLAKE_ACCOUNT,
-    warehouse=st.secrets.SNOWFLAKE_WAREHOUSE,
-    database="HMDA_REDLINING",
-    schema="SOURCE"
-)
+conn = st.connection("snowflake")
 
 @st.cache_data
-def load_data(query, _conn):
-    df = pd.read_sql(query, _conn)
-    return df  
+def load_data(query):
+    session = conn.session() 
+    data = session.sql(query).to_pandas()
+    return data 
 
 
 # Load dataframes

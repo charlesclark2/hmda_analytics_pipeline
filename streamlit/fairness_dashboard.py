@@ -19,8 +19,8 @@ conn = snowflake.connector.connect(
 )
 
 @st.cache_data
-def load_data(query, conn):
-    df = pd.read_sql(query, conn)
+def load_data(query, _conn):
+    df = pd.read_sql(query, _conn)
     return df  
 
 

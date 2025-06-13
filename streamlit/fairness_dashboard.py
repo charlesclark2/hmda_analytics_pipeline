@@ -37,7 +37,7 @@ st.divider()
 
 with st.expander("📘 Executive Summary"):
     st.markdown("""
-    **Project Title:** _Detecting Potential Redlining in Mortgage Lending Using Machine Learning_
+    **Project Title:** _Lines That Still Divide: Mapping Modern Redlining with Machine Learning and Geographic Disparity Analysis_
 
     **Objective:**  
     This project leverages machine learning to detect potential racial bias in mortgage approval decisions across the United States. Using Home Mortgage Disclosure Act (HMDA) data from 2018–2023 and additional socioeconomic and geographic datasets, the model aims to identify patterns consistent with redlining.

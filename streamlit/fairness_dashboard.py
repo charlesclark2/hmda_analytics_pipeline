@@ -4,10 +4,9 @@ import numpy as np
 import snowflake.connector
 import plotly.express as px
 import plotly.graph_objects as go 
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
+
 
 # Snowflake Connection
 conn = snowflake.connector.connect(

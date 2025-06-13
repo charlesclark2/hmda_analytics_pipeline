@@ -18,19 +18,28 @@ conn = snowflake.connector.connect(
     schema="SOURCE"
 )
 
-# Load dataframes
-fairness_df = pd.read_sql("SELECT * FROM hmda_redlining.source.mart_hmda_fairness_scoring", conn)
-overall_score_df = pd.read_sql("select * from hmda_redlining.source.metrics_overall_model_score", conn)
-year_score_df = pd.read_sql("select * from hmda_redlining.source.metrics_model_score_by_year", conn)
-calibration_df = pd.read_sql("select * from metrics_calibration_by_group", conn)
-approval_year_df = pd.read_sql("select * from hmda_redlining.source.metrics_annual_approval_rate_by_group", conn)
-score_distro_df = pd.read_sql("select * from hmda_redlining.source.metrics_predicted_score_distribution", conn)
-gap_df = pd.read_sql("select * from hmda_redlining.source.mart_hmda_redlining_detection", conn)
-shap_df = pd.read_sql("select feature, mean_shap_value from hmda_redlining.source.shap_values_log where experiment_name ilike 'Final_experiment_validation_full_set'", conn)
-counter_df = pd.read_sql("select * from hmda_redlining.source.race_counterfactual_results", conn)
-cf_geo_df = pd.read_sql("select * from hmda_redlining.source.mart_hmda_race_counterfactual_redlining", conn)
+@st.cache_data
+def load_data(query, conn):
+    df = pd.read_sql(query, conn)
+    return df  
 
-st.title("HMDA Redlining Model")
+
+# Load dataframes
+fairness_df = load_data("SELECT * FROM hmda_redlining.source.mart_hmda_fairness_scoring", conn)
+overall_score_df = load_data("select * from hmda_redlining.source.metrics_overall_model_score", conn)
+year_score_df = load_data("select * from hmda_redlining.source.metrics_model_score_by_year", conn)
+calibration_df = load_data("select * from metrics_calibration_by_group", conn)
+approval_year_df = load_data("select * from hmda_redlining.source.metrics_annual_approval_rate_by_group", conn)
+score_distro_df = load_data("select * from hmda_redlining.source.metrics_predicted_score_distribution", conn)
+gap_df = load_data("select * from hmda_redlining.source.mart_hmda_redlining_detection", conn)
+shap_df = load_data("select feature, mean_shap_value from hmda_redlining.source.shap_values_log where experiment_name ilike 'Final_experiment_validation_full_set'", conn)
+counter_df = load_data("select * from hmda_redlining.source.race_counterfactual_results", conn)
+cf_geo_df = load_data("select * from hmda_redlining.source.mart_hmda_race_counterfactual_redlining", conn)
+
+st.title("Lines That Still Divide")
+st.subheader("Mapping Modern Redlining with Machine Learning and Geographic Disparity Analysis")
+
+st.divider()
 
 with st.expander("📘 Executive Summary"):
     st.markdown("""
@@ -64,6 +73,8 @@ with st.expander("📘 Executive Summary"):
     - Expand to analyze lender-level behavioral trends
     - Collaborate with fair lending audit teams to interpret tract-level results
     """)
+
+st.divider()
 
 st.header("Model Performance")
 
@@ -246,6 +257,8 @@ cal_fig.update_layout(legend_title_text="Racial Group")
 
 st.plotly_chart(cal_fig, use_container_width=True, key="calibration_all_groups")
 
+st.divider()
+
 st.header("Distribution and Exposure Metrics")
 
 with st.expander("ℹ️ What do these metrics mean?"):
@@ -320,6 +333,8 @@ dist_fig = px.line(
 )
 st.plotly_chart(dist_fig, use_container_width=True)
 
+st.divider()
+
 st.header("🗺️ Geographic Redlining Patterns by Census Tract")
 
 gap_df = gap_df.dropna(subset=["LATITUDE", "LONGITUDE"])
@@ -387,6 +402,8 @@ st.dataframe(top_tracts_df[[
     "MODEL_VS_ACTUAL_GAP", "SCORE_DPD", "SCORE_EOD"
 ]], use_container_width=True)
 
+st.divider()
+
 st.header("Explainability and Accountability")
 
 st.subheader("📈 SHAP (SHapely Additive exPlanations) Feature Importance")
@@ -415,6 +432,8 @@ shap_fig = px.bar(
 
 shap_fig.update_layout(yaxis_title="", xaxis_title="Mean |SHAP| Value", height=800)
 st.plotly_chart(shap_fig, use_container_width=True)
+
+st.divider()
 
 st.header("Counterfactual Analysis")
 

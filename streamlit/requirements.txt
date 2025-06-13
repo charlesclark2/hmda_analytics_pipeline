@@ -1,5 +1,5 @@
-streamlit==1.45.1
-pandas==2.3.0
-numpy==2.2.6
-snowflake-connector-python==2.2.6
-plotly==6.1.2
+streamlit
+pandas
+numpy
+snowflake-connector-python
+plotly

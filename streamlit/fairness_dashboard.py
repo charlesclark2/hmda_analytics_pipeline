@@ -11,10 +11,10 @@ load_dotenv()
 
 # Snowflake Connection
 conn = snowflake.connector.connect(
-    user=os.getenv("SNOWFLAKE_USER"),
-    password=os.getenv("SNOWFLAKE_PASSWORD"),
-    account=os.getenv("SNOWFLAKE_ACCOUNT"),
-    warehouse=os.getenv("SNOWFLAKE_WAREHOUSE"),
+    user=st.secrets.SNOWFLAKE_USER,
+    password=st.secrets.SNOWFLAKE_PASSWORD,
+    account=st.secrets.SNOWFLAKE_ACCOUNT,
+    warehouse=st.secrets.SNOWFLAKE_WAREHOUSE,
     database="HMDA_REDLINING",
     schema="SOURCE"
 )

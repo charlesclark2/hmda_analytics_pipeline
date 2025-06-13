@@ -19,16 +19,16 @@ def load_data(query):
 
 
 # Load dataframes
-fairness_df = load_data("SELECT * FROM hmda_redlining.source.mart_hmda_fairness_scoring", conn)
-overall_score_df = load_data("select * from hmda_redlining.source.metrics_overall_model_score", conn)
-year_score_df = load_data("select * from hmda_redlining.source.metrics_model_score_by_year", conn)
-calibration_df = load_data("select * from metrics_calibration_by_group", conn)
-approval_year_df = load_data("select * from hmda_redlining.source.metrics_annual_approval_rate_by_group", conn)
-score_distro_df = load_data("select * from hmda_redlining.source.metrics_predicted_score_distribution", conn)
-gap_df = load_data("select * from hmda_redlining.source.mart_hmda_redlining_detection", conn)
-shap_df = load_data("select feature, mean_shap_value from hmda_redlining.source.shap_values_log where experiment_name ilike 'Final_experiment_validation_full_set'", conn)
-counter_df = load_data("select * from hmda_redlining.source.race_counterfactual_results", conn)
-cf_geo_df = load_data("select * from hmda_redlining.source.mart_hmda_race_counterfactual_redlining", conn)
+fairness_df = load_data("SELECT * FROM hmda_redlining.source.mart_hmda_fairness_scoring")
+overall_score_df = load_data("select * from hmda_redlining.source.metrics_overall_model_score")
+year_score_df = load_data("select * from hmda_redlining.source.metrics_model_score_by_year")
+calibration_df = load_data("select * from metrics_calibration_by_group")
+approval_year_df = load_data("select * from hmda_redlining.source.metrics_annual_approval_rate_by_group")
+score_distro_df = load_data("select * from hmda_redlining.source.metrics_predicted_score_distribution")
+gap_df = load_data("select * from hmda_redlining.source.mart_hmda_redlining_detection")
+shap_df = load_data("select feature, mean_shap_value from hmda_redlining.source.shap_values_log where experiment_name ilike 'Final_experiment_validation_full_set'")
+counter_df = load_data("select * from hmda_redlining.source.race_counterfactual_results")
+cf_geo_df = load_data("select * from hmda_redlining.source.mart_hmda_race_counterfactual_redlining")
 
 st.title("Lines That Still Divide")
 st.subheader("Mapping Modern Redlining with Machine Learning and Geographic Disparity Analysis")
